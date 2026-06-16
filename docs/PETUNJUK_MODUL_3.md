@@ -8,7 +8,7 @@
 public function withdraw(Request $request) {
     $wallet = Wallet::find($request->wallet_id);
     $wallet->balance -= $request->amount;
-    $wallet->save(); // Tidak ada validasi, bisa negatif ❌
+    $wallet->save(); // Tidak ada validasi, bisa negatif
 }
 ```
 
@@ -18,7 +18,7 @@ public function withdraw(Request $request) {
 class Wallet extends Model {
     protected $fillable = ['user_id', 'balance'];
     // Tidak ada konsep daily_limit, daily_spent
-    // User bisa transfer unlimited dalam sehari ❌
+    // User bisa transfer unlimited dalam sehari
 }
 ```
 
@@ -27,7 +27,7 @@ class Wallet extends Model {
 // SALAH - dua request bersamaan bisa bikin saldo negatif
 // Request 1: balance = 1000, withdraw 800
 // Request 2: balance = 1000, withdraw 800
-// Hasil: balance = -600 ❌
+// Hasil: balance = -600
 ```
 
 ### 4. Anemic Model - Logika di Controller
@@ -42,8 +42,8 @@ public function transfer(Request $request) {
     
     $from->save();
     $to->save();
-    // Tidak atomic, bisa gagal di tengah ❌
-    // Tidak ada validasi domain ❌
+    // Tidak atomic, bisa gagal di tengah
+    // Tidak ada validasi domain
 }
 ```
 
@@ -59,7 +59,7 @@ class Wallet extends Model {
     public function calculateFee() { }
     public function generateReport() { }
     public function detectFraud() { }
-    // Terlalu banyak tanggung jawab ❌
+    // Terlalu banyak tanggung jawab
 }
 ```
 
