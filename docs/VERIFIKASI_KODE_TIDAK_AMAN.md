@@ -1,6 +1,6 @@
 # Verifikasi: Semua Kode Sengaja Tidak Aman
 
-## ✅ Checklist Masalah Keamanan
+## Checklist Masalah Keamanan
 
 ### Modul 1: Authentication
 
@@ -137,7 +137,7 @@
 
 ---
 
-## 🔴 Kategori Masalah Keamanan
+## Kategori Masalah Keamanan
 
 ### 1. Design Flaws
 - ✅ Shallow/Anemic Models (semua modul)
@@ -189,7 +189,7 @@
 
 ---
 
-## 🎯 Ekspektasi Perbaikan
+## Ekspektasi Perbaikan
 
 ### Modul 1
 Mahasiswa harus:
@@ -232,7 +232,7 @@ Mahasiswa harus:
 
 ---
 
-## ✅ Verifikasi Akhir
+## Verifikasi Akhir
 
 **Semua kode yang dibuat SENGAJA TIDAK AMAN dan SALAH.**
 
@@ -247,7 +247,7 @@ Tujuannya adalah agar mahasiswa:
 
 ---
 
-## 📝 Catatan untuk Dosen/Asisten
+## Catatan untuk Dosen/Asisten
 
 Jika mahasiswa bertanya "Kenapa kode ini tidak aman?", jangan langsung kasih jawaban. Gunakan Socratic method:
 
@@ -260,4 +260,4 @@ Biarkan mahasiswa berpikir dan menemukan sendiri. Ini bagian dari pembelajaran.
 
 ---
 
-**Status**: ✅ VERIFIED - Semua kode sengaja tidak aman untuk tujuan pembelajaran
+**Status**: VERIFIED - Semua kode sengaja tidak aman untuk tujuan pembelajaran
