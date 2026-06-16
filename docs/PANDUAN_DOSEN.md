@@ -392,4 +392,4 @@ Jika ada pertanyaan tentang lab ini:
 
 ---
 
-**Good luck teaching! 🎓**
+**Good luck teaching!**
