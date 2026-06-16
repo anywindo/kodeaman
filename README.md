@@ -119,16 +119,16 @@ php artisan test --filter=Modul1AuthTest
 
 Setelah menyelesaikan lab ini, mahasiswa akan:
 
-✅ Memahami perbedaan Shallow vs Deep Model  
-✅ Bisa mengidentifikasi Primitive Obsession  
-✅ Memahami bahaya Boolean Flag Hell  
-✅ Bisa implementasi State Machine Pattern  
-✅ Memahami konsep Immutability  
-✅ Bisa handle Race Condition dengan Pessimistic Locking  
-✅ Memahami Idempotency Pattern  
-✅ Bisa implementasi Domain Events untuk Audit Trail  
-✅ Memahami Value Objects dan kapan menggunakannya  
-✅ Bisa mendesain sistem yang aman dari awal (Security by Design)
+- Memahami perbedaan Shallow vs Deep Model  
+- Bisa mengidentifikasi Primitive Obsession  
+- Memahami bahaya Boolean Flag Hell  
+- Bisa implementasi State Machine Pattern  
+- Memahami konsep Immutability  
+- Bisa handle Race Condition dengan Pessimistic Locking  
+- Memahami Idempotency Pattern  
+- Bisa implementasi Domain Events untuk Audit Trail  
+- Memahami Value Objects dan kapan menggunakannya  
+- Bisa mendesain sistem yang aman dari awal (Security by Design)
 
 ---
 
