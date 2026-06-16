@@ -8,7 +8,7 @@ Repository ini berisi **kode yang sengaja tidak aman** untuk tujuan pembelajaran
 
 ## Jenis Kontribusi yang Diterima
 
-### ✅ Kontribusi yang Diterima
+### Kontribusi yang Diterima
 
 1. **Perbaikan Dokumentasi**
    - Typo atau grammar
@@ -30,7 +30,7 @@ Repository ini berisi **kode yang sengaja tidak aman** untuk tujuan pembelajaran
    - Struktur yang lebih baik
    - Contoh tambahan
 
-### ❌ Kontribusi yang TIDAK Diterima
+### Kontribusi yang TIDAK Diterima
 
 1. **Solusi Lengkap**
    - Jangan submit kode solusi lengkap
