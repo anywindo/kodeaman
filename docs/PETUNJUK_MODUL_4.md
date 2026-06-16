@@ -23,8 +23,8 @@ public function redeem(Request $request) {
 ```php
 // Voucher.php - SALAH
 protected $fillable = ['code', 'discount_amount', 'max_usage'];
-// code = string bebas, bisa "ABC", "abc", " ABC " (tidak konsisten) ❌
-// discount_amount = double, bisa negatif ❌
+// code = string bebas, bisa "ABC", "abc", " ABC " (tidak konsisten)
+// discount_amount = double, bisa negatif
 ```
 
 ### 3. Tidak Ada Konsep Quota/Limit
@@ -41,9 +41,9 @@ protected $fillable = ['code', 'discount_amount', 'max_usage'];
 // Voucher.php - SALAH
 protected $fillable = ['valid_from', 'valid_until'];
 // Bisa redeem meskipun:
-// - Belum valid_from ❌
-// - Sudah lewat valid_until ❌
-// - valid_until < valid_from ❌
+// - Belum valid_from
+// - Sudah lewat valid_until
+// - valid_until < valid_from
 ```
 
 ### 5. Anemic Model - Validasi di Controller
@@ -61,7 +61,7 @@ public function redeem(Request $request) {
         return response()->json(['error' => 'Fully used']);
     }
     
-    // Validasi tersebar, mudah dibypass ❌
+    // Validasi tersebar, mudah dibypass
 }
 ```
 
@@ -69,18 +69,18 @@ public function redeem(Request $request) {
 ```php
 // SALAH - request yang sama bisa diproses berkali-kali
 // Tidak ada idempotency key
-// Retry bisa bikin double redemption ❌
+// Retry bisa bikin double redemption
 ```
 
 ### 7. Invalid State Bisa Direpresentasikan
 ```php
 // SALAH - semua ini bisa terjadi:
-$voucher->usage_count = -5; // Negatif ❌
-$voucher->max_usage = 0; // Tidak masuk akal ❌
-$voucher->discount_amount = -1000; // Discount negatif ❌
+$voucher->usage_count = -5; // Negatif
+$voucher->max_usage = 0; // Tidak masuk akal
+$voucher->discount_amount = -1000; // Discount negatif
 $voucher->valid_from = '2024-12-31';
-$voucher->valid_until = '2024-01-01'; // Until sebelum from ❌
-$voucher->code = ''; // Empty code ❌
+$voucher->valid_until = '2024-01-01'; // Until sebelum from
+$voucher->code = ''; // Empty code
 ```
 
 ## Yang Harus Diperbaiki
