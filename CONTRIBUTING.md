@@ -1,8 +1,8 @@
 # Contributing to Lab Security by Design
 
-Terima kasih atas minat Anda untuk berkontribusi! 🎉
+Terima kasih atas minat Anda untuk berkontribusi!
 
-## ⚠️ Catatan Penting
+## Catatan Penting
 
 Repository ini berisi **kode yang sengaja tidak aman** untuk tujuan pembelajaran. Jangan submit PR untuk "memperbaiki" kode yang tidak aman, karena itu adalah bagian dari lab.
 
@@ -238,4 +238,4 @@ Dengan berkontribusi, Anda setuju bahwa kontribusi Anda akan dilisensikan di baw
 
 ---
 
-**Terima kasih atas kontribusi Anda! 🙏**
+**Terima kasih atas kontribusi Anda!**
