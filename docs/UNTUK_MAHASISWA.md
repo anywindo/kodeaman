@@ -254,14 +254,14 @@ final class Money {
 ### Kisi-Kisi BUKAN Solusi Lengkap
 
 Kisi-kisi hanya memberikan:
-- ✅ Struktur (file apa, class apa, method apa)
-- ✅ Signature method (parameter dan return type)
-- ✅ Hint singkat (validasi apa, logic apa)
+- Struktur (file apa, class apa, method apa)
+- Signature method (parameter dan return type)
+- Hint singkat (validasi apa, logic apa)
 
 Kisi-kisi TIDAK memberikan:
-- ❌ Implementasi lengkap
-- ❌ Kode copy-paste
-- ❌ Solusi detail
+- Implementasi lengkap
+- Kode copy-paste
+- Solusi detail
 
 **Anda harus berpikir dan mengimplementasikan sendiri!**
 
@@ -296,7 +296,7 @@ Kisi-kisi TIDAK memberikan:
 
 ## Kesalahan Umum yang Harus Dihindari
 
-### ❌ Hanya Tambah Validasi di Controller
+### Hanya Tambah Validasi di Controller
 ```php
 // SALAH - validasi bisa dibypass dari controller lain
 public function refund($id) {
@@ -307,7 +307,7 @@ public function refund($id) {
 }
 ```
 
-### ✅ Pindahkan Logic ke Model
+### Pindahkan Logic ke Model
 ```php
 // BENAR - validasi di model, tidak bisa dibypass
 class Order {
@@ -320,28 +320,28 @@ class Order {
 }
 ```
 
-### ❌ Pakai Primitives untuk Domain Concepts
+### Pakai Primitives untuk Domain Concepts
 ```php
 // SALAH
 public float $amount; // Bisa negatif
 public string $status; // Bisa typo
 ```
 
-### ✅ Pakai Value Objects dan Enums
+### Pakai Value Objects dan Enums
 ```php
 // BENAR
 public Money $amount; // Tidak bisa negatif
 public OrderStatus $status; // Type-safe
 ```
 
-### ❌ Tidak Pakai Transaction dan Locking
+### Tidak Pakai Transaction dan Locking
 ```php
 // SALAH - race condition
 $voucher->usage_count++;
 $voucher->save();
 ```
 
-### ✅ Pakai Transaction dan Locking
+### Pakai Transaction dan Locking
 ```php
 // BENAR
 DB::transaction(function() {
@@ -363,8 +363,8 @@ DB::transaction(function() {
 - Enums (PHP 8.1+)
 
 ### 2. Diskusi dengan Teman
-- Diskusi konsep: ✅ OK
-- Copy-paste kode: ❌ TIDAK OK
+- Diskusi konsep: OK
+- Copy-paste kode: TIDAK OK
 
 ### 3. Gunakan Debugger
 - Jangan hanya `dd()` atau `var_dump()`
@@ -419,12 +419,12 @@ A: Baca error message dengan teliti. Debug dengan `dd()`. Cek apakah migration s
 
 ---
 
-## 🎓 Mindset yang Benar
+## Mindset yang Benar
 
-### ❌ Mindset Salah:
+### Mindset Salah:
 "Saya harus fix bug ini secepat mungkin"
 
-### ✅ Mindset Benar:
+### Mindset Benar:
 "Saya harus memahami kenapa desain ini tidak aman, dan bagaimana cara mendesain yang benar"
 
 ---
