@@ -1,33 +1,33 @@
-# 🎯 Panduan untuk Mahasiswa
+# Panduan untuk Mahasiswa
 
-## ⚠️ PENTING: Kode Sengaja Tidak Aman!
+## PENTING: Kode sengaja tidak aman!
 
 Semua kode di repository ini **SENGAJA DIBUAT TIDAK AMAN** untuk tujuan pembelajaran.
 
-**Tugas Anda**: Memperbaiki kode yang bermasalah menjadi aman dengan menerapkan prinsip Security by Design.
+**Tugas Anda**: Memperbaiki kode yang bermasalah agar aman dengan menerapkan prinsip Security by Design.
 
 ---
 
-## 📚 Apa yang Harus Anda Lakukan?
+## Apa yang Harus Anda Lakukan?
 
 ### 1. Jangan Langsung Coding!
 
 Sebelum mulai coding, lakukan ini:
 
-✅ Baca `PETUNJUK_MODUL_X.md` dengan teliti  
-✅ Baca `KISI-KISI_PERBAIKAN.md` untuk tahu struktur solusi  
-✅ Identifikasi SEMUA masalah yang ada  
-✅ Baca test cases untuk tahu requirement  
-✅ Buat design/diagram sederhana  
-✅ Baru mulai coding
+- Baca `PETUNJUK_MODUL_X.md` dengan teliti  
+- Baca `KISI-KISI_PERBAIKAN.md` untuk tahu struktur solusi  
+- Identifikasi SEMUA masalah yang ada  
+- Baca test cases untuk tahu requirement  
+- Buat design/diagram sederhana  
+- Baru mulai coding
 
 ### 2. Gunakan Kisi-Kisi sebagai Panduan
 
 File **`KISI-KISI_PERBAIKAN.md`** berisi:
-- ✅ Checklist file apa saja yang harus dibuat
-- ✅ Struktur class/method yang diperlukan
-- ✅ Hint implementasi (tanpa kode lengkap)
-- ✅ Urutan pengerjaan yang disarankan
+- Checklist file apa saja yang harus dibuat
+- Struktur class/method yang diperlukan
+- Hint implementasi (tanpa kode lengkap)
+- Urutan pengerjaan yang disarankan
 
 **Contoh dari kisi-kisi**:
 ```
@@ -37,7 +37,7 @@ Model LoginAttempt harus punya method:
 - clearAttempts(string $email): void
 ```
 
-Anda harus implementasi sendiri berdasarkan hint ini.
+Anda harus mengimplementasikan sendiri berdasarkan hint ini.
 
 ### 3. Pahami Konsep, Bukan Hanya Fix Bug
 
@@ -86,64 +86,64 @@ php artisan test --filter=Modul1AuthTest
 
 ---
 
-## 🔍 Cara Mengidentifikasi Masalah
+## Cara Mengidentifikasi Masalah
 
 ### Modul 1: Authentication
 
 **Buka file**: `app/Http/Controllers/AuthController.php`
 
 **Tanya diri Anda**:
-- ❓ Apa yang terjadi jika attacker coba login 1000x dengan password berbeda?
-- ❓ Apakah ada yang mencatat failed login attempts?
-- ❓ Apakah ada lockout mechanism?
-- ❓ Apakah session bisa dicuri dan dipakai di device lain?
+- Apa yang terjadi jika attacker mencoba login 1000x dengan password berbeda?
+- Apakah ada yang mencatat failed login attempts?
+- Apakah ada lockout mechanism?
+- Apakah session bisa dicuri dan dipakai di device lain?
 
 **Buka file**: `app/Models/User.php`
 
 **Tanya diri Anda**:
-- ❓ Apakah model ini hanya data container?
-- ❓ Apakah ada business logic untuk security?
-- ❓ Apakah ada method seperti `isLocked()`, `canAttemptLogin()`?
+- Apakah model ini hanya data container?
+- Apakah ada business logic untuk security?
+- Apakah ada method seperti `isLocked()`, `canAttemptLogin()`?
 
 ### Modul 2: Order & Refund
 
 **Buka file**: `app/Models/Order.php`
 
 **Tanya diri Anda**:
-- ❓ Apakah status bisa diubah langsung tanpa validasi?
-- ❓ Apakah bisa refund tanpa melalui paid → shipped → delivered?
-- ❓ Apakah amount bisa negatif?
-- ❓ Apakah amount bisa diubah setelah order dibuat?
-- ❓ Apakah kombinasi boolean invalid bisa terjadi? (is_refunded=true tapi is_paid=false)
+- Apakah status bisa diubah langsung tanpa validasi?
+- Apakah bisa refund tanpa melalui paid → shipped → delivered?
+- Apakah amount bisa negatif?
+- Apakah amount bisa diubah setelah order dibuat?
+- Apakah kombinasi boolean invalid bisa terjadi? (is_refunded=true tapi is_paid=false)
 
 ### Modul 3: E-Wallet
 
 **Buka file**: `app/Models/Wallet.php`
 
 **Tanya diri Anda**:
-- ❓ Apakah saldo bisa negatif?
-- ❓ Apakah ada daily limit?
-- ❓ Apa yang terjadi jika 2 request withdraw bersamaan?
-- ❓ Apakah transfer atomic? (bisa gagal di tengah?)
-- ❓ Apakah bisa transfer ke wallet sendiri?
+- Apakah saldo bisa negatif?
+- Apakah ada daily limit?
+- Apa yang terjadi jika 2 request withdraw bersamaan?
+- Apakah transfer atomic? (bisa gagal di tengah?)
+- Apakah bisa transfer ke wallet sendiri?
 
 ### Modul 4: Voucher & Promo
 
 **Buka file**: `app/Models/Voucher.php`
 
 **Tanya diri Anda**:
-- ❓ Apa yang terjadi jika 2 user redeem voucher yang sama bersamaan?
-- ❓ Apakah ada idempotency? (retry bisa double redeem?)
-- ❓ Apakah voucher code case-sensitive?
-- ❓ Apakah discount bisa negatif?
-- ❓ Apakah max usage enforced?
-- ❓ Apakah ada max usage per user?
+- Apa yang terjadi jika 2 user redeem voucher yang sama bersamaan?
+- Apakah ada idempotency? (retry bisa double redeem?)
+- Apakah voucher code case-sensitive?
+- Apakah diskon bisa negatif?
+- Apakah max usage enforced?
+- Apakah ada max usage per user?
 
 ---
 
-## 🛠️ Apa yang Harus Dibuat?
+## Apa yang Harus Dibuat?
 
-> 💡 **Lihat detail lengkap di `KISI-KISI_PERBAIKAN.md`**
+> **Lihat detail lengkap di `KISI-KISI_PERBAIKAN.md`**
 
 ### Untuk Setiap Modul, Anda Akan Membuat:
 
@@ -197,7 +197,7 @@ Untuk domain errors:
 
 ---
 
-## 📋 Cara Menggunakan Kisi-Kisi
+## Cara Menggunakan Kisi-Kisi
 
 File `KISI-KISI_PERBAIKAN.md` adalah panduan struktur solusi Anda.
 
@@ -254,20 +254,20 @@ final class Money {
 ### Kisi-Kisi BUKAN Solusi Lengkap
 
 Kisi-kisi hanya memberikan:
-- ✅ Struktur (file apa, class apa, method apa)
-- ✅ Signature method (parameter dan return type)
-- ✅ Hint singkat (validasi apa, logic apa)
+- Struktur (file apa, class apa, method apa)
+- Signature method (parameter dan return type)
+- Hint singkat (validasi apa, logic apa)
 
 Kisi-kisi TIDAK memberikan:
-- ❌ Implementasi lengkap
-- ❌ Kode copy-paste
-- ❌ Solusi detail
+- Implementasi lengkap
+- Kode copy-paste
+- Solusi detail
 
 **Anda harus berpikir dan mengimplementasikan sendiri!**
 
 ---
 
-## ✅ Checklist Sebelum Submit
+## Checklist Sebelum Submit
 
 ### Functionality
 - [ ] Semua test PASS
@@ -294,9 +294,9 @@ Kisi-kisi TIDAK memberikan:
 
 ---
 
-## 🚫 Kesalahan Umum yang Harus Dihindari
+## Kesalahan Umum yang Harus Dihindari
 
-### ❌ Hanya Tambah Validasi di Controller
+### Hanya Tambah Validasi di Controller
 ```php
 // SALAH - validasi bisa dibypass dari controller lain
 public function refund($id) {
@@ -307,7 +307,7 @@ public function refund($id) {
 }
 ```
 
-### ✅ Pindahkan Logic ke Model
+### Pindahkan Logic ke Model
 ```php
 // BENAR - validasi di model, tidak bisa dibypass
 class Order {
@@ -320,28 +320,28 @@ class Order {
 }
 ```
 
-### ❌ Pakai Primitives untuk Domain Concepts
+### Pakai Primitives untuk Domain Concepts
 ```php
 // SALAH
 public float $amount; // Bisa negatif
 public string $status; // Bisa typo
 ```
 
-### ✅ Pakai Value Objects dan Enums
+### Pakai Value Objects dan Enums
 ```php
 // BENAR
 public Money $amount; // Tidak bisa negatif
 public OrderStatus $status; // Type-safe
 ```
 
-### ❌ Tidak Pakai Transaction dan Locking
+### Tidak Pakai Transaction dan Locking
 ```php
 // SALAH - race condition
 $voucher->usage_count++;
 $voucher->save();
 ```
 
-### ✅ Pakai Transaction dan Locking
+### Pakai Transaction dan Locking
 ```php
 // BENAR
 DB::transaction(function() {
@@ -353,7 +353,7 @@ DB::transaction(function() {
 
 ---
 
-## 💡 Tips Sukses
+## Tips Sukses
 
 ### 1. Baca Dokumentasi Laravel
 - Eloquent Events
@@ -363,8 +363,8 @@ DB::transaction(function() {
 - Enums (PHP 8.1+)
 
 ### 2. Diskusi dengan Teman
-- Diskusi konsep: ✅ OK
-- Copy-paste kode: ❌ TIDAK OK
+- Diskusi konsep: OK
+- Copy-paste kode: TIDAK OK
 
 ### 3. Gunakan Debugger
 - Jangan hanya `dd()` atau `var_dump()`
@@ -382,7 +382,7 @@ Test adalah requirement. Jika test gagal, ada yang salah dengan implementasi And
 
 ---
 
-## 📖 Referensi
+## Referensi
 
 ### Books
 - Domain-Driven Design by Eric Evans
@@ -400,7 +400,7 @@ Test adalah requirement. Jika test gagal, ada yang salah dengan implementasi And
 
 ---
 
-## ❓ FAQ
+## FAQ
 
 **Q: Boleh pakai package Laravel seperti Fortify?**  
 A: Tidak untuk Modul 1. Tujuannya adalah memahami konsep, bukan pakai package.
@@ -419,18 +419,18 @@ A: Baca error message dengan teliti. Debug dengan `dd()`. Cek apakah migration s
 
 ---
 
-## 🎓 Mindset yang Benar
+## Mindset yang Benar
 
-### ❌ Mindset Salah:
+### Mindset Salah:
 "Saya harus fix bug ini secepat mungkin"
 
-### ✅ Mindset Benar:
+### Mindset Benar:
 "Saya harus memahami kenapa desain ini tidak aman, dan bagaimana cara mendesain yang benar"
 
 ---
 
-## 🚀 Selamat Belajar!
+## Selamat Belajar!
 
 Ingat: **Security by Design bukan tentang tools atau fitur tambahan. Security by Design adalah tentang desain dan arsitektur yang aman dari awal.**
 
-Good luck! 💪
+Good luck!

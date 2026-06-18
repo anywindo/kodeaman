@@ -1,12 +1,12 @@
 # Lab Security by Design - Laravel
 
-## ⚠️ PENTING: Kode Sengaja Tidak Aman!
+## PENTING: Kode sengaja tidak aman!
 
 **Semua kode di repository ini SENGAJA DIBUAT TIDAK AMAN untuk tujuan pembelajaran.**
 
-**Tugas Anda**: Memperbaiki kode yang bermasalah menjadi aman dengan menerapkan prinsip Security by Design.
+**Tugas Anda**: Memperbaiki kode yang bermasalah agar aman dengan menerapkan prinsip Security by Design.
 
-📖 **Baca dulu**: [`docs/UNTUK_MAHASISWA.md`](docs/UNTUK_MAHASISWA.md) sebelum mulai!
+**Baca dulu**: [`docs/UNTUK_MAHASISWA.md`](docs/UNTUK_MAHASISWA.md) sebelum mulai!
 
 ---
 
@@ -66,11 +66,11 @@ Mahasiswa akan memperbaiki kode Laravel yang memiliki masalah desain keamanan fu
 - Pessimistic Locking
 - Quota Management
 
-## 📚 File Penting untuk Mahasiswa
+## File Penting untuk Mahasiswa
 
 ### Wajib Dibaca
 1. **`UNTUK_MAHASISWA.md`** - Panduan lengkap untuk mahasiswa
-2. **`KISI-KISI_PERBAIKAN.md`** - ⭐ Struktur solusi & checklist (TANPA kode lengkap)
+2. **`KISI-KISI_PERBAIKAN.md`** - Struktur solusi & checklist (TANPA kode lengkap)
 3. **`CARA_MENGERJAKAN.md`** - Step-by-step cara mengerjakan
 4. **`KONSEP_SECURITY_BY_DESIGN.md`** - Penjelasan konsep
 
@@ -89,7 +89,7 @@ Mahasiswa akan memperbaiki kode Laravel yang memiliki masalah desain keamanan fu
 
 ---
 
-## ⚡ Quick Start
+## Quick Start
 
 ```bash
 # 1. Clone repository
@@ -115,24 +115,24 @@ php artisan test --filter=Modul1AuthTest
 
 ---
 
-## 🎯 Ekspektasi
+## Ekspektasi
 
 Setelah menyelesaikan lab ini, mahasiswa akan:
 
-✅ Memahami perbedaan Shallow vs Deep Model  
-✅ Bisa mengidentifikasi Primitive Obsession  
-✅ Memahami bahaya Boolean Flag Hell  
-✅ Bisa implementasi State Machine Pattern  
-✅ Memahami konsep Immutability  
-✅ Bisa handle Race Condition dengan Pessimistic Locking  
-✅ Memahami Idempotency Pattern  
-✅ Bisa implementasi Domain Events untuk Audit Trail  
-✅ Memahami Value Objects dan kapan menggunakannya  
-✅ Bisa mendesain sistem yang aman dari awal (Security by Design)
+- Memahami perbedaan Shallow vs Deep Model  
+- Bisa mengidentifikasi Primitive Obsession  
+- Memahami bahaya Boolean Flag Hell  
+- Bisa implementasi State Machine Pattern  
+- Memahami konsep Immutability  
+- Bisa handle Race Condition dengan Pessimistic Locking  
+- Memahami Idempotency Pattern  
+- Bisa implementasi Domain Events untuk Audit Trail  
+- Memahami Value Objects dan kapan menggunakannya  
+- Bisa mendesain sistem yang aman dari awal (Security by Design)
 
 ---
 
-## 📞 Bantuan
+## Bantuan
 
 Jika stuck:
 1. Baca petunjuk lagi dengan teliti
@@ -143,4 +143,4 @@ Jika stuck:
 
 ---
 
-**Good luck! 🚀**
+**Good luck!**

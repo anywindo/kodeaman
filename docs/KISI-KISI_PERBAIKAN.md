@@ -1,14 +1,14 @@
-# 📋 Kisi-Kisi Perbaikan Kode
+# Kisi-Kisi Perbaikan Kode
 
 ## Panduan Struktur Solusi (Tanpa Kode Lengkap)
 
-Dokumen ini memberikan **petunjuk struktur** apa yang harus dibuat untuk setiap modul, tanpa memberikan implementasi lengkap. Gunakan ini sebagai checklist.
+Dokumen ini memberikan **petunjuk struktur** tentang apa yang harus dibuat untuk setiap modul, tanpa memberikan implementasi lengkap. Gunakan ini sebagai checklist.
 
 ---
 
 ## Modul 1: Authentication & Login Security
 
-### ✅ Checklist Yang Harus Dibuat
+### Checklist Yang Harus Dibuat
 
 #### 1. Migration Baru
 **File**: `database/migrations/YYYY_MM_DD_create_login_attempts_table.php`
@@ -73,7 +73,7 @@ Dokumen ini memberikan **petunjuk struktur** apa yang harus dibuat untuk setiap 
 
 ## Modul 2: Order & Refund System
 
-### ✅ Checklist Yang Harus Dibuat
+### Checklist Yang Harus Dibuat
 
 #### 1. Enum untuk Status
 **File**: `app/Enums/OrderStatus.php`
@@ -273,7 +273,7 @@ Sama seperti Modul 2
 
 ## Modul 4: Voucher & Promo System
 
-### ✅ Checklist Yang Harus Dibuat
+### Checklist Yang Harus Dibuat
 
 #### 1. Value Object VoucherCode
 **File**: `app/ValueObjects/VoucherCode.php`
@@ -388,7 +388,7 @@ Sama seperti Modul 2
 
 ---
 
-## 🎯 Tips Implementasi
+## Tips Implementasi
 
 ### Urutan Pengerjaan yang Disarankan
 
@@ -476,7 +476,7 @@ event(new SomethingHappened($this));
 
 ---
 
-## ✅ Checklist Akhir
+## Checklist Akhir
 
 Sebelum submit, pastikan:
 
