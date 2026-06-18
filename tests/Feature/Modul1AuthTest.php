@@ -70,16 +70,18 @@ class Modul1AuthTest extends TestCase
         $user = User::factory()->create();
 
         // Login dari IP 1
-        $response1 = $this->postJson('/api/login', [
-            'email' => $user->email,
-            'password' => 'password',
-        ], ['REMOTE_ADDR' => '192.168.1.1']);
+        $response1 = $this->withServerVariables(['REMOTE_ADDR' => '192.168.1.1'])
+            ->postJson('/api/login', [
+                'email' => $user->email,
+                'password' => 'password',
+            ]);
 
         $token1 = $response1->json('token');
 
         // Login dari IP 2 dengan token yang sama
         $response2 = $this->withToken($token1)
-            ->getJson('/api/user', ['REMOTE_ADDR' => '192.168.1.2']);
+            ->withServerVariables(['REMOTE_ADDR' => '192.168.1.2'])
+            ->getJson('/api/user');
 
         // Harus ditolak karena IP berbeda
         $response2->assertStatus(401);

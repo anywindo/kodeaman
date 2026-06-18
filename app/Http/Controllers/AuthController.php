@@ -35,7 +35,7 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-//        $credentials = $request->only('email', 'password'); -- digantikan
+        //        $credentials = $request->only('email', 'password'); -- digantikan
 
         $request->validate([
             'email' => 'required|email',
@@ -102,7 +102,7 @@ class AuthController extends Controller
             'user' => $user,
         ]);
     }
-    
+
     public function register(Request $request)
     {
         // [SOLVED] MASALAH: Validasi hanya di controller
@@ -111,22 +111,22 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
         ]);
-        
+
         // [SOLVED] MASALAH: User model hanya anemic data container
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-        
-        A$token = $user->createToken('auth-token');
+
+        $token = $user->createToken('auth-token');
 
         return response()->json([
             'token' => $token->plainTextToken,
             'user' => $user,
         ], 201);
     }
-    
+
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();

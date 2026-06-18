@@ -17,8 +17,8 @@ class ValidateTokenIp
     public function handle(Request $request, Closure $next)
     {
         $token = $request->user()?->currentAccessToken();
-
-        if ($token && $token->ip_address && $token->ip_address !== $request->ip()) {
+ 
+        if ($token && isset($token->ip_address) && $token->ip_address !== $request->ip()) {
             // IP berbeda — kemungkinan session hijacking
             // Revoke token untuk keamanan
             $token->delete();
