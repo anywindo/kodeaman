@@ -3,44 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Enums\OrderStatus;
+use App\Exceptions\InvalidStateTransition;
+use App\Exceptions\ImmutableFieldException;
+use App\Exceptions\CannotRefundException;
+use App\Events\OrderPaid;
+use App\Events\OrderRefunded;
 
-/**
- * MODUL 2: Order Model
- * 
- * MASALAH:
- * 1. Primitive obsession - status string, amount double, user_id int
- * 2. Boolean flag hell - banyak boolean untuk state
- * 3. Anemic model - tidak ada business logic
- * 4. Semua field bisa diubah (tidak ada immutability)
- * 5. Invalid state bisa direpresentasikan
- */
 class Order extends Model
 {
-    // MASALAH: Semua field fillable, tidak ada protection
-    protected $fillable = [
-        'user_id',
-        'amount',
-        'status',
-        'order_date',
-        'paid_at',
-        'shipped_at',
-        'delivered_at',
-        'refund_requested_at',
-        'refunded_at',
-        'refund_reason',
-        'refund_amount',
-    ];
+    use HasFactory;
+
+    protected $guarded = ['id'];
     
-    // MASALAH: Boolean flag hell
-    // Kombinasi invalid bisa terjadi:
-    // - is_refunded=true tapi is_paid=false
-    // - is_delivered=true tapi is_shipped=false
     protected $casts = [
-        'is_paid' => 'boolean',
-        'is_shipped' => 'boolean',
-        'is_delivered' => 'boolean',
-        'is_refunded' => 'boolean',
-        'is_refund_approved' => 'boolean',
+        'status' => OrderStatus::class,
         'order_date' => 'datetime',
         'paid_at' => 'datetime',
         'shipped_at' => 'datetime',
@@ -48,22 +26,75 @@ class Order extends Model
         'refund_requested_at' => 'datetime',
         'refunded_at' => 'datetime',
     ];
+
+    public function setStatusAttribute($value)
+    {
+        if ($value !== null && !$value instanceof OrderStatus && !OrderStatus::tryFrom($value)) {
+            throw new \InvalidArgumentException("Invalid status");
+        }
+        $this->attributes['status'] = $value instanceof OrderStatus ? $value->value : $value;
+    }
     
-    // MASALAH: Tidak ada method untuk:
-    // - confirmPayment()
-    // - ship()
-    // - confirmDelivery()
-    // - requestRefund()
-    // - approveRefund()
+    public function setAmountAttribute($value)
+    {
+        if ($this->exists) {
+            throw new ImmutableFieldException('amount');
+        }
+        $this->attributes['amount'] = $value;
+    }
+
+    public function confirmPayment(): void
+    {
+        if ($this->status !== OrderStatus::PENDING) {
+            throw new InvalidStateTransition('Order must be in PENDING state to confirm payment.');
+        }
+        $this->status = OrderStatus::PAID;
+        $this->paid_at = now();
+        $this->save();
+        event(new OrderPaid($this));
+    }
     
-    // MASALAH: Tidak ada validasi:
-    // - amount bisa negatif
-    // - status bisa typo: "payed", "PAID", "Paid"
-    // - refund_date bisa sebelum order_date
-    // - refund_amount bisa lebih besar dari amount
+    public function ship(): void
+    {
+        if ($this->status !== OrderStatus::PAID) {
+            throw new InvalidStateTransition('Cannot ship order that is not paid');
+        }
+        $this->status = OrderStatus::SHIPPED;
+        $this->shipped_at = now();
+        $this->save();
+    }
     
-    // MASALAH: Tidak ada enforcement temporal coupling:
-    // - Bisa langsung refunded tanpa melalui paid → shipped → delivered
+    public function confirmDelivery(): void
+    {
+        if ($this->status !== OrderStatus::SHIPPED) {
+            throw new InvalidStateTransition('Order must be in SHIPPED state to be delivered.');
+        }
+        $this->status = OrderStatus::DELIVERED;
+        $this->delivered_at = now();
+        $this->save();
+    }
+    
+    public function requestRefund(string $reason): void
+    {
+        if ($this->status !== OrderStatus::DELIVERED) {
+            throw new CannotRefundException('Can only refund delivered orders');
+        }
+        $this->status = OrderStatus::REFUND_REQUESTED;
+        $this->refund_requested_at = now();
+        $this->refund_reason = $reason;
+        $this->save();
+    }
+    
+    public function approveRefund(): void
+    {
+        if ($this->status !== OrderStatus::REFUND_REQUESTED) {
+            throw new InvalidStateTransition('No refund request found');
+        }
+        $this->status = OrderStatus::REFUNDED;
+        $this->refunded_at = now();
+        $this->save();
+        event(new OrderRefunded($this));
+    }
     
     public function user()
     {

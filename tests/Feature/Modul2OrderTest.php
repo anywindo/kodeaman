@@ -30,7 +30,7 @@ class Modul2OrderTest extends TestCase
         $order = Order::first();
         
         // Harus tetap pending, tidak bisa langsung paid
-        $this->assertEquals('pending', $order->status);
+        $this->assertEquals('pending', $order->status->value);
     }
 
     /** @test */
@@ -135,6 +135,8 @@ class Modul2OrderTest extends TestCase
     {
         $user = User::factory()->create();
 
+        $this->expectException(\InvalidArgumentException::class);
+
         // Coba buat order dengan status typo
         $order = new Order([
             'user_id' => $user->id,
@@ -142,7 +144,6 @@ class Modul2OrderTest extends TestCase
             'status' => 'payed', // Typo
         ]);
 
-        $this->expectException(\InvalidArgumentException::class);
         $order->save();
     }
 
@@ -177,18 +178,18 @@ class Modul2OrderTest extends TestCase
         // Flow: pending → paid → shipped → delivered → refund_requested → refunded
 
         $order->confirmPayment();
-        $this->assertEquals('paid', $order->fresh()->status);
+        $this->assertEquals('paid', $order->fresh()->status->value);
 
         $order->ship();
-        $this->assertEquals('shipped', $order->fresh()->status);
+        $this->assertEquals('shipped', $order->fresh()->status->value);
 
         $order->confirmDelivery();
-        $this->assertEquals('delivered', $order->fresh()->status);
+        $this->assertEquals('delivered', $order->fresh()->status->value);
 
         $order->requestRefund('Defective product');
-        $this->assertEquals('refund_requested', $order->fresh()->status);
+        $this->assertEquals('refund_requested', $order->fresh()->status->value);
 
         $order->approveRefund();
-        $this->assertEquals('refunded', $order->fresh()->status);
+        $this->assertEquals('refunded', $order->fresh()->status->value);
     }
 }
