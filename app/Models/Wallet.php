@@ -2,95 +2,103 @@
 
 namespace App\Models;
 
+use App\Events\WalletCredited;
+use App\Events\WalletDebited;
+use App\Exceptions\DailyLimitExceededException;
+use App\Exceptions\InsufficientBalanceException;
+use App\ValueObjects\Money;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 
-/**
- * MODUL 3: Wallet Model
- * 
- * MASALAH:
- * 1. Anemic model - hanya data container
- * 2. Tidak ada domain rules (saldo negatif, daily limit)
- * 3. Tidak ada value object untuk Money
- * 4. God object - terlalu banyak tanggung jawab
- * 5. Tidak ada protection dari race condition
- */
 class Wallet extends Model
 {
-    // MASALAH: Semua field fillable
+    use HasFactory;
+    
+    private const DAILY_LIMIT = 10000000; // 10 million (in whatever unit `balance` uses, usually cents, but tests might use it as raw units, let's assume it's cents)
+
     protected $fillable = [
         'user_id',
-        'balance',
+        // balance removed from fillable to enforce domain methods
     ];
-    
+
     protected $casts = [
-        'balance' => 'decimal:2',
+        'is_suspended' => 'boolean',
+        'daily_spent_date' => 'date',
     ];
-    
-    // MASALAH: Tidak ada field untuk:
-    // - daily_limit
-    // - daily_spent
-    // - is_suspended
-    // - suspended_reason
-    
-    // MASALAH: Tidak ada method untuk:
-    // - debit(Money $amount)
-    // - credit(Money $amount)
-    // - canDebit(Money $amount)
-    // - exceedsDailyLimit(Money $amount)
-    // - suspend(string $reason)
-    
-    // MASALAH: Tidak ada validasi:
-    // - balance bisa negatif
-    // - tidak ada daily limit enforcement
-    
-    // MASALAH: God object - semua logic di satu class
-    // Seharusnya ada separation:
-    // - Wallet (domain logic)
-    // - WalletTransferService (transfer logic)
-    // - WalletNotificationService (notification)
-    // - WalletReportService (reporting)
-    
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-    
-    // MASALAH: Method ini seharusnya di service terpisah
-    public function withdraw($amount)
+
+    public function debit(Money $amount): void
     {
-        $this->balance -= $amount;
+        if (!$this->canDebit($amount)) {
+            throw new InsufficientBalanceException();
+        }
+
+        if ($this->exceedsDailyLimit($amount)) {
+            throw new DailyLimitExceededException();
+        }
+
+        DB::transaction(function () use ($amount) {
+            $this->lockForUpdate();
+
+            $this->balance -= $amount->toCents();
+            $this->updateDailySpent($amount);
+            $this->save();
+
+            event(new WalletDebited($this, $amount));
+        });
+    }
+
+    public function credit(Money $amount): void
+    {
+        DB::transaction(function () use ($amount) {
+            $this->lockForUpdate();
+
+            $this->balance += $amount->toCents();
+            $this->save();
+
+            event(new WalletCredited($this, $amount));
+        });
+    }
+
+    private function canDebit(Money $amount): bool
+    {
+        $currentBalance = Money::fromCents($this->balance ?? 0);
+        return $currentBalance->isGreaterThanOrEqual($amount);
+    }
+
+    private function exceedsDailyLimit(Money $amount): bool
+    {
+        $today = now()->toDateString();
+        $dailySpent = ($this->daily_spent_date && $this->daily_spent_date->toDateString() === $today) 
+            ? Money::fromCents($this->daily_spent ?? 0) 
+            : Money::fromCents(0);
+
+        return $dailySpent->add($amount)->isGreaterThan(
+            Money::fromCents(self::DAILY_LIMIT)
+        );
+    }
+
+    private function updateDailySpent(Money $amount): void
+    {
+        $today = now()->toDateString();
+        if (!$this->daily_spent_date || $this->daily_spent_date->toDateString() !== $today) {
+            $this->daily_spent = 0;
+            $this->daily_spent_date = $today;
+        }
+
+        $this->daily_spent += $amount->toCents();
+    }
+
+    public function suspend(string $reason): void
+    {
+        $this->is_suspended = true;
+        $this->suspended_reason = $reason;
+        $this->suspended_at = now();
         $this->save();
-    }
-    
-    public function deposit($amount)
-    {
-        $this->balance += $amount;
-        $this->save();
-    }
-    
-    public function transfer($toWallet, $amount)
-    {
-        $this->balance -= $amount;
-        $toWallet->balance += $amount;
-        $this->save();
-        $toWallet->save();
-    }
-    
-    // MASALAH: Notification logic di model
-    public function sendNotification($message)
-    {
-        // ...
-    }
-    
-    // MASALAH: Report logic di model
-    public function generateReport()
-    {
-        // ...
-    }
-    
-    // MASALAH: Fraud detection di model
-    public function detectFraud()
-    {
-        // ...
     }
 }

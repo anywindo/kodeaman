@@ -23,6 +23,26 @@ final class Money
         return new self((int) round($rupiah * 100));
     }
 
+    public function add(Money $other): self
+    {
+        return new self($this->cents + $other->cents);
+    }
+
+    public function subtract(Money $other): self
+    {
+        return new self($this->cents - $other->cents);
+    }
+
+    public function isGreaterThan(Money $other): bool
+    {
+        return $this->cents > $other->cents;
+    }
+
+    public function isGreaterThanOrEqual(Money $other): bool
+    {
+        return $this->cents >= $other->cents;
+    }
+
     public function toCents(): int
     {
         return $this->cents;
@@ -31,10 +51,5 @@ final class Money
     public function toRupiah(): float
     {
         return $this->cents / 100;
-    }
-
-    public function isGreaterThan(Money $other): bool
-    {
-        return $this->cents > $other->cents;
     }
 }

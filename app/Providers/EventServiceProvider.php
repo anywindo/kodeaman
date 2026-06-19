@@ -24,6 +24,9 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\OrderRefunded::class => [
             \App\Listeners\LogOrderEvent::class,
         ],
+        \App\Events\WalletDebited::class => [
+            \App\Listeners\DetectAnomalousActivity::class,
+        ],
     ];
 
     /**

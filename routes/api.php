@@ -25,4 +25,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/orders/{id}/request-refund', [\App\Http\Controllers\OrderController::class, 'requestRefund']);
     Route::post('/orders/{id}/approve-refund', [\App\Http\Controllers\OrderController::class, 'approveRefund']);
     Route::put('/orders/{id}/amount', [\App\Http\Controllers\OrderController::class, 'updateAmount']);
+
+    // Modul 3 Routes
+    Route::post('/wallets/deposit', [\App\Http\Controllers\WalletController::class, 'deposit']);
+    Route::post('/wallets/withdraw', [\App\Http\Controllers\WalletController::class, 'withdraw']);
+    Route::post('/wallets/transfer', [\App\Http\Controllers\WalletController::class, 'transfer']);
+    Route::get('/wallets/{id}/balance', [\App\Http\Controllers\WalletController::class, 'getBalance']);
 });
