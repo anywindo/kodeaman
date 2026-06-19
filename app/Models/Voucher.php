@@ -3,34 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\ValueObjects\VoucherCode;
+use App\Exceptions\ImmutableFieldException;
+use InvalidArgumentException;
 
-/**
- * MODUL 4: Voucher Model
- * 
- * MASALAH:
- * 1. Primitive obsession - semua field primitif
- * 2. Boolean flag hell
- * 3. Anemic model - tidak ada business logic
- * 4. Invalid state bisa direpresentasikan
- * 5. Tidak ada domain rules
- */
 class Voucher extends Model
 {
-    // MASALAH: Semua field fillable, tidak ada protection
-    protected $fillable = [
-        'code',
-        'discount_type', // String: "percentage", "fixed", bisa typo
-        'discount_value', // Double, bisa negatif
-        'min_purchase', // Double, bisa negatif
-        'max_discount', // Double, bisa negatif
-        'max_usage',
-        'usage_count', // Bisa diubah langsung, bypass validation
-        'max_usage_per_user',
-        'valid_from',
-        'valid_until',
-    ];
+    use HasFactory;
+
+    protected $guarded = ['id'];
     
-    // MASALAH: Boolean flag hell
     protected $casts = [
         'is_active' => 'boolean',
         'is_expired' => 'boolean',
@@ -41,39 +24,118 @@ class Voucher extends Model
         'valid_from' => 'datetime',
         'valid_until' => 'datetime',
     ];
-    
-    // MASALAH: Tidak ada method untuk:
-    // - canBeRedeemedBy(User $user, Order $order)
-    // - isActive()
-    // - isUsedUp()
-    // - calculateDiscount(Money $amount)
-    // - meetsMinimumPurchase(Order $order)
-    // - redeem(User $user, string $idempotencyKey)
-    
-    // MASALAH: Tidak ada validasi:
-    // - code bisa empty atau format salah
-    // - discount_value bisa negatif
-    // - valid_until bisa sebelum valid_from
-    // - usage_count bisa lebih dari max_usage
-    // - discount_type bisa typo
-    // - max_usage bisa 0 atau negatif
-    
-    // MASALAH: Tidak ada enforcement:
-    // - Max usage per user
-    // - Idempotency
-    // - Pessimistic locking untuk race condition
-    
-    // MASALAH: Tidak ada immutability:
-    // - code bisa diubah setelah dibuat
-    // - max_usage bisa diubah setelah ada redemption
-    // - usage_count bisa dikurangi
-    
-    // MASALAH: Kombinasi boolean invalid bisa terjadi:
-    // - is_active=true tapi is_expired=true
-    // - is_used_up=false tapi usage_count >= max_usage
-    
+
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::creating(function ($voucher) {
+            // Validasi format voucher code
+            $code = VoucherCode::fromString($voucher->code);
+            $voucher->code = $code->toString();
+
+            // Validasi tipe discount
+            if (!in_array($voucher->discount_type, ['percentage', 'fixed'])) {
+                throw new InvalidArgumentException('Invalid discount type');
+            }
+
+            // Validasi discount value
+            if ($voucher->discount_value < 0) {
+                throw new InvalidArgumentException('Discount value cannot be negative');
+            }
+            if ($voucher->discount_type === 'percentage' && $voucher->discount_value > 100) {
+                throw new InvalidArgumentException('Percentage cannot exceed 100');
+            }
+
+            // Validasi tanggal
+            if ($voucher->valid_until && $voucher->valid_from && $voucher->valid_until <= $voucher->valid_from) {
+                throw new InvalidArgumentException('valid_until must be after valid_from');
+            }
+            
+            // Validasi usage
+            if ($voucher->max_usage <= 0) {
+                throw new InvalidArgumentException('max_usage must be positive');
+            }
+        });
+
+        static::updating(function ($voucher) {
+            // Immutable fields check
+            if ($voucher->isDirty(['code', 'discount_type', 'valid_from'])) {
+                throw new ImmutableFieldException('Cannot modify code, discount_type, or valid_from');
+            }
+            
+            // Usage count tidak bisa dikurangi
+            if ($voucher->isDirty('usage_count') && $voucher->usage_count < $voucher->getOriginal('usage_count')) {
+                throw new InvalidArgumentException('usage_count cannot be decreased');
+            }
+        });
+    }
+
     public function redemptions()
     {
         return $this->hasMany(VoucherRedemption::class);
+    }
+
+    public function isActive(): bool
+    {
+        return $this->is_active;
+    }
+
+    public function isWithinValidityPeriod(): bool
+    {
+        $now = now();
+        return $now->greaterThanOrEqualTo($this->valid_from) && $now->lessThanOrEqualTo($this->valid_until);
+    }
+
+    public function hasRemainingUsage(): bool
+    {
+        return $this->usage_count < $this->max_usage;
+    }
+
+    public function meetsMinimumPurchase(float $amount): bool
+    {
+        return $amount >= $this->min_purchase;
+    }
+
+    public function canBeRedeemed(User $user, Order $order): bool
+    {
+        if (!$this->isActive() || !$this->isWithinValidityPeriod()) {
+            return false;
+        }
+
+        if (!$this->hasRemainingUsage()) {
+            return false;
+        }
+
+        if (!$this->meetsMinimumPurchase($order->amount)) {
+            return false;
+        }
+
+        if ($this->is_first_order_only) {
+            // Cek apakah user pernah punya order selain ini yang berstatus sukses atau minimal punya order lama
+            $pastOrders = Order::where('user_id', $user->id)
+                                ->where('id', '!=', $order->id)
+                                ->count();
+            if ($pastOrders > 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function calculateDiscount(float $orderAmount): float
+    {
+        if ($this->discount_type === 'percentage') {
+            $discount = ($orderAmount * $this->discount_value) / 100;
+        } else {
+            $discount = $this->discount_value;
+        }
+
+        if ($this->max_discount !== null && $discount > $this->max_discount) {
+            $discount = $this->max_discount;
+        }
+
+        return $discount;
     }
 }

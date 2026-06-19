@@ -27,6 +27,9 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\WalletDebited::class => [
             \App\Listeners\DetectAnomalousActivity::class,
         ],
+        \App\Events\VoucherRedeemed::class => [
+            \App\Listeners\DetectVoucherAbuse::class,
+        ],
     ];
 
     /**

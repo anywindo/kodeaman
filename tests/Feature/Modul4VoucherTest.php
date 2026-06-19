@@ -7,6 +7,8 @@ use App\Models\Voucher;
 use App\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
+use App\Events\SuspiciousVoucherActivity;
 use Tests\TestCase;
 
 /**
@@ -135,6 +137,9 @@ class Modul4VoucherTest extends TestCase
             'code' => 'FIRSTORDER',
             'order_id' => $order1->id,
         ]);
+        if ($response1->status() !== 200) {
+            $response1->dump();
+        }
         $response1->assertStatus(200);
 
         // Order kedua
@@ -167,7 +172,7 @@ class Modul4VoucherTest extends TestCase
             'code' => 'MAXCAP',
             'order_id' => $order->id,
         ]);
-
+        
         $response->assertStatus(200);
         $response->assertJson(['discount' => 50000]); // Bukan 100000
     }
@@ -197,6 +202,7 @@ class Modul4VoucherTest extends TestCase
     public function abuse_detection_5_redemption_dalam_1_jam()
     {
         $user = User::factory()->create();
+        Event::fake([SuspiciousVoucherActivity::class]);
 
         // 6 redemption dalam 1 jam
         for ($i = 0; $i < 6; $i++) {
